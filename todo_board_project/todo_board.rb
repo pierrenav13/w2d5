@@ -2,46 +2,68 @@ require_relative 'list.rb'
 class TodoBoard
     
     def initialize(label)
-        @list = List.new(label)
+        @lists = {}
     end
 
     def get_command
-        p "Enter a command:"
+        print "\nEnter a command: "
         cmd, *args = gets.chomp.split(' ')
 
         case cmd
+        when 'mklist'
+            @lists[args[0]] = List.new(args[0])
+            return true
+        when 'ls'
+            @lists.keys.each {|label| p label}
+            return true
+        when 'showall'
+            @lists.values.each {|list| list.print}
+            return true
         when 'mktodo'
-            @list.add_item(*args)
+            if args.length == 3
+                @lists[args[0]].add_item(args[1], args[2])
+            else
+                @lists[args[0]].add_item(args[1], args[2], args[3])
+            end
             return true
         when 'up'
-            if args.length == 1
-                @list.up(args[0].to_i)
+            if args.length == 2
+                @lists[args[0]].up(args[1].to_i)
             else
-                @list.up(args[0].to_i, args[1].to_i)
+                @lists[args[0]].up(args[1].to_i, args[2].to_i)
             end
             return true
         when 'down'
-            if args.length == 1
-                @list.down(args[0].to_i)
+            if args.length == 2
+                @lists[args[0]].down(args[1].to_i)
             else
-                @list.down(args[0].to_i, args[1].to_i)
+                @lists[args[0]].down(args[1].to_i, args[2].to_i)
             end
             return true
         when 'swap'
-            @list.swap(args[0].to_i, args[1].to_i)
+            @lists[args[0]].swap(args[1].to_i, args[2].to_i)
             return true
         when 'sort'
-            @list.sort_by_date!
+            @lists[args[0]].sort_by_date!
             return true
         when 'priority'
-            @list.print_priority
+            @lists[args[0]].print_priority
             return true
         when 'print'
-            if args.empty?
-                @list.print
+            if args.length == 1
+                @lists[args[0]].print
             else
-                @list.print_full_item(args[0].to_i)
+                @lists[args[0]].print_full_item(args[1].to_i)
             end
+            return true
+        when 'toggle'
+            @lists[args[0]].toggle_item(args[1].to_i)
+            return true
+        when 'rm'
+            @lists[args[0]].remove_item(args[1].to_i)
+            return true
+        when 'purge'
+            @lists[args[0]].purge
             return true
         when 'quit'
             return false
@@ -57,6 +79,7 @@ class TodoBoard
         end
     end
 
-
-
 end
+
+b = TodoBoard.new('Lists')
+b.run

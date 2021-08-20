@@ -44,9 +44,9 @@ class List
     def print
         p "-----#{@label}-----"
        
-        p "Idx  | Item   |Deadline"
+        p "Idx  | Item   |Deadline  | Done?"
         @items.each_with_index do |ele, idx|
-            p "#{idx}   | #{ele.title}  | #{ele.deadline}"
+            p "#{idx}   | #{ele.title}  | #{ele.deadline}  | #{ele.done}"
         end
         return
     end
@@ -54,7 +54,7 @@ class List
     def print_full_item(idx)
         i = @items[idx]
         if valid_index?(idx)
-            p "Title: #{i.title} | Deadline: #{i.deadline} | Description: #{i.description}"
+            p "Title: #{i.title} | Deadline: #{i.deadline} | Description: #{i.description} | Done: #{i.done}"
         end
         return
     end
@@ -93,6 +93,34 @@ class List
 
     def sort_by_date!
         @items.sort_by! {|item| item.deadline}
+    end
+
+    def toggle_item(index)
+        @items[index].toggle
+    end
+
+    def remove_item(index)
+        if valid_index?(index)
+            @items.delete_at(index)
+            return true
+        else
+            return false
+        end
+    end
+
+    def purge
+        purged = false
+        while purged == false
+            purged = true
+            @items.each_with_index do |item, idx|
+                if item.done == true
+                    remove_item(idx) 
+                    purged = false
+                    break
+                end
+            end
+        end
+        return true
     end
 
 

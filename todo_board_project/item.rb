@@ -15,7 +15,7 @@ class Item
     end
 
     attr_accessor :title, :description
-    attr_reader :deadline
+    attr_reader :deadline, :done
 
     def initialize(title, deadline, description)
         @title = title
@@ -24,6 +24,7 @@ class Item
         end
         @deadline = deadline
         @description = description
+        @done = false
     end
 
     def deadline=(new_deadline)
@@ -33,6 +34,11 @@ class Item
             raise StandardError.new 'deadline not valid'
         end
     end
+
+    def toggle
+        @done = !@done
+    end
+
 end
 
 
